@@ -175,7 +175,8 @@ class Auth:
         return self._split_order_info(status)
 
     def get_history_trades(self, pair_main=cfg['pair_main'], pair_second=cfg['pair_second']):
-        """Return dictionary with key order_id and value array with info"""
+        """Return dictionary with key order_id and value array with info
+            0: type(buy or sell), 1: symbol, 2: price, 3: amount, 4: timestamp"""
         history = self._history_trades(pair_main, pair_second)
         trades = {x['order_id']: [pair_main + pair_second, x['type'].lower(),
                                   float(x['price']), float(x['amount']), float(x['timestamp'])] for x in history}
