@@ -1,12 +1,5 @@
 public_key: ''
 secret_key: ''
 
-pair_main: "btc"
-pair_second: "usd"
-
-# Debug, Info, Warning, Error
-level_log: debug
-# How much save log files after size limit
-log_count: 5
-# Size for each log file
-log_size: 5
+pair_main: btc
+pair_second: usd

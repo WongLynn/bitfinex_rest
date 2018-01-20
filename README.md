@@ -57,3 +57,10 @@
         Description: Return dictionary with key order_id and value array with info
             0: type(buy or sell, 1: symbol, 2: price, 3: amount, 4: timestamp
         Output: {'str': [str, str, str, float, float, float], ...}
+
+
+****TO DO****
+
+    1. Manage exceptions
+    2. Add more tests
+    3. ...

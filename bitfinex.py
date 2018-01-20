@@ -25,7 +25,7 @@ class Public:
 
     def _ticker(self, pair_main, pair_second):
         symbol = pair_main + pair_second
-        return self._public_call("pubticker/{}".format(symbol))
+        return self._public_call('pubticker/{}'.format(symbol))
 
     def _orderbook(self, pair_main, pair_second, limit=50):
         symbol = pair_main + pair_second
@@ -38,7 +38,7 @@ class Public:
     def get_last_price(self, pair_main=cfg['pair_main'], pair_second=cfg['pair_second']):
         """Return value of last exchange trade"""
         trades = self._trades(pair_main, pair_second, limit=20)
-        last_trade = [float(value["price"]) for value in trades][0]
+        last_trade = [float(value['price']) for value in trades][0]
         return last_trade
 
     def get_ticker(self, pair_main=cfg['pair_main'], pair_second=cfg['pair_second']):
@@ -61,15 +61,15 @@ class Public:
         start = time.time()
         trades = self._trades(pair_main, pair_second, limit=200)
         timestamp = start - time.time()
-        trade_list = [float(value["price"]) for value in trades
-                      if timestamp - interval * 60 <= int(value["timestamp"])]
+        trade_list = [float(value['price']) for value in trades
+                      if timestamp - interval * 60 <= int(value['timestamp'])]
         if trade_list:
-            volume = sum([float(value["amount"]) for value in trades
-                          if timestamp - interval * 60 <= int(value["timestamp"])])
-            volume_buy = sum([float(value["amount"]) for value in trades
-                              if timestamp - interval * 60 <= int(value["timestamp"]) and value['type'] == 'buy'])
-            volume_sell = sum([float(value["amount"]) for value in trades
-                               if timestamp - interval * 60 <= int(value["timestamp"]) and value['type'] == 'sell'])
+            volume = sum([float(value['amount']) for value in trades
+                          if timestamp - interval * 60 <= int(value['timestamp'])])
+            volume_buy = sum([float(value['amount']) for value in trades
+                              if timestamp - interval * 60 <= int(value['timestamp']) and value['type'] == 'buy'])
+            volume_sell = sum([float(value['amount']) for value in trades
+                               if timestamp - interval * 60 <= int(value['timestamp']) and value['type'] == 'sell'])
             candle = [trade_list[-1], trade_list[0], min(trade_list), max(trade_list),
                       volume, volume_buy, volume_sell, time.time()]
             return candle
@@ -90,8 +90,8 @@ class Auth:
 
     def _sign(self, params):
         payload_json = json.dumps(params)
-        payload = base64.b64encode(payload_json.encode("utf-8"))
-        h = hmac.new(self.secret_key.encode("utf-8"), payload, hashlib.sha384)
+        payload = base64.b64encode(payload_json.encode('utf-8'))
+        h = hmac.new(self.secret_key.encode('utf-8'), payload, hashlib.sha384)
         signature = h.hexdigest()
         headers = {
             'X-BFX-APIKEY': self.public_key,
@@ -101,7 +101,7 @@ class Auth:
         return headers
 
     def _auth_call(self, params):
-        url = URI + params["request"]
+        url = URI + params['request']
         params['nonce'] = self._nonce()
         response = requests.post(url, headers=self._sign(params), timeout=5)
         if response.status_code not in (200, 201, 202):
@@ -110,29 +110,29 @@ class Auth:
         return response.json()
 
     def _balance(self):
-        params = {"request": "/v1/balances"}
+        params = {'request': '/v1/balances'}
         return self._auth_call(params)
 
     def _new_order(self, amount, price, side, order_type, pair_main, pair_second):
         symbol = pair_main + pair_second
-        params = {"request": "/v1/order/new",
-                  "symbol": symbol,
-                  "amount": str(amount),
-                  "price": str(price),
-                  "side": side,
-                  "type": order_type}
+        params = {'request': '/v1/order/new',
+                  'symbol': symbol,
+                  'amount': str(amount),
+                  'price': str(price),
+                  'side': side,
+                  'type': order_type}
         return self._auth_call(params)
 
     def _cancel_order(self, order_id):
-        params = {"request": "/v1/order/cancel", "order_id": int(order_id)}
+        params = {'request': '/v1/order/cancel', 'order_id': int(order_id)}
         return self._auth_call(params)
 
     def _order_status(self, order_id):
-        params = {"request": "/v1/order/status", "order_id": int(order_id)}
+        params = {'request': '/v1/order/status', 'order_id': int(order_id)}
         return self._auth_call(params)
 
     def _active_orders(self):
-        params = {"request": "/v1/orders"}
+        params = {'request': '/v1/orders'}
         return self._auth_call(params)
 
     def _history_trades(self, pair_main, pair_second):
@@ -165,7 +165,7 @@ class Auth:
 
     def get_active_orders(self):
         """Return array with active orders(each order in list [id, symbol, price, amount, timestamp])"""
-        orders = [[x["id"], x['symbol'], float(x['price']), float(x['original_amount']),
+        orders = [[x['id'], x['symbol'], float(x['price']), float(x['original_amount']),
                    float(x['timestamp'])] for x in self._active_orders()]
         return orders
 
